@@ -1,0 +1,35 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="2" author="GabrielAlves">
+        <createTable tableName="tarefa">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="titulo" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="descricao" type="TEXT"/>
+            <column name="concluido" type="boolean" defaultValueBoolean="false"/>
+            <column name="data_criacao" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="usuario_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="tarefa" indexName="idx_tarefa_usuario">
+            <column name="usuario_id"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseTableName="tarefa" baseColumnNames="usuario_id" constraintName="fk_tarefa_usuario" referencedTableName="usuario"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+
+
+</databaseChangeLog>
