@@ -1,4 +1,12 @@
-# Sistema de Tarefas
+# Sistema de Tarefas 
+
+![Status](https://img.shields.io/badge/Status-Em_Construção-yellow)
+![Java](https://img.shields.io/badge/Java-24-blue)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-green)
+![MySQL](https://img.shields.io/badge/MySQL-5.7-blue)
+![React](https://img.shields.io/badge/React-in_construction-blueviolet)
+![Git](https://img.shields.io/badge/Git-GitHub-orange)
+
 
 ## Descrição
 
@@ -67,4 +75,5 @@ O diagrama abaixo apresenta o modelo lógico do banco de dados do sistema de tar
 
 O diagrama abaixo apresenta o modelo físico entidade relacionamento no banco de dados:
 
-![Diagrama ER Logico](docs/diagrama_ER_fisico.png)
+![Diagrama ER Físico](https://github.com/GabrielDaCostaAlves/tarefas/blob/main/docs/Diagrama_ER_Fisico.png)
+
