@@ -65,15 +65,21 @@ public class UsuarioService {
 
     }
 
-    // TODO: implementar exclusão.
+
     public Boolean excluirUsuario(UsuarioDto usuarioDto){
 
+        Usuario usuario = usuarioRepository.findByEmail(usuarioDto.email());
 
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuário não encontrado.");
+        }
 
-        return null;
+        usuarioRepository.delete(usuario);
+
+        return true;
     }
 
-    // CRUD: CREATE OK, READ fora da logica, UPDATE a fazer, DELETE a fazer
+    // CRUD: CREATE OK, READ fora da logica, UPDATE OK, DELETE OK
 
 
 
