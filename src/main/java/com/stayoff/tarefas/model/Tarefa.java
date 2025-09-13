@@ -29,7 +29,7 @@ public class Tarefa {
     @Column(nullable = false)
     private Boolean concluido = false;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "data_criacao")
     private LocalDateTime dataCriacao = LocalDateTime.now();
 
 
