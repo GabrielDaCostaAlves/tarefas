@@ -6,6 +6,8 @@ import com.stayoff.tarefas.model.Usuario;
 import com.stayoff.tarefas.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UsuarioService {
 
@@ -17,7 +19,7 @@ public class UsuarioService {
 
     public UsuarioResponseDTO criarUsuario(UsuarioDto usuarioDto){
 
-        validarEmail(usuarioDto);
+        validarEmail(usuarioDto.email(),null);
         Usuario usuario = Usuario.builder()
                 .nome(usuarioDto.nome())
                 .email(usuarioDto.email())
@@ -32,55 +34,48 @@ public class UsuarioService {
         );
     }
 
-    public void validarEmail(UsuarioDto usuarioDto) {
-        Usuario usuario;
-        if (usuarioDto.email() == null || usuarioDto.email().isBlank() || !usuarioDto.email().contains("@")) {
+    private void validarEmail(String email, Long usuarioId) {
+        if (email == null || email.isBlank() || !email.contains("@")) {
             throw new IllegalArgumentException("Email inválido");
         }
 
-        usuario = usuarioRepository.findByEmail(usuarioDto.email());
-        if (usuario != null) {
-            throw new IllegalArgumentException("E-mail já utilizado para cadastro!");
-        }
+        Usuario usuarioExistente = usuarioRepository.findByEmail(email);
 
+
+        if (usuarioExistente != null && !usuarioExistente.getId().equals(usuarioId)) {
+            throw new IllegalArgumentException("E-mail já utilizado por outro usuário!");
+        }
     }
 
-
     public UsuarioResponseDTO atualizaUsuario(UsuarioDto usuarioDto,Usuario usuario){
-        validarEmail(usuarioDto);
-        Usuario usuarioAtualizado = Usuario.builder()
-                .nome(usuarioDto.nome())
-                .email(usuarioDto.email())
-                .senha(usuarioDto.senha())
-                .build();
 
-        if (!usuario.getEmail().equals(usuarioAtualizado.getEmail())){
-            throw new IllegalArgumentException("Não tem autorização para alterar este usuário.");
-        }
-        usuarioAtualizado =  usuarioRepository.save(usuario);
+        validarEmail(usuarioDto.email(),usuario.getId());
+
+
+
+        usuario.setSenha(usuarioDto.senha());
+        usuario.setEmail(usuarioDto.email());
+        usuario.setNome(usuarioDto.nome());
+
+
+        usuario =  usuarioRepository.save(usuario);
 
         return new UsuarioResponseDTO(
-                    usuarioAtualizado.getId(),usuario.getNome(),usuario.getEmail()
+                usuario.getId(),usuario.getNome(),usuario.getEmail()
         );
 
     }
 
 
-    public Boolean excluirUsuario(UsuarioDto usuarioDto){
+    public void excluirUsuario(Long id){
 
-        Usuario usuario = usuarioRepository.findByEmail(usuarioDto.email());
-
-        if (usuario == null) {
-            throw new IllegalArgumentException("Usuário não encontrado.");
-        }
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
 
         usuarioRepository.delete(usuario);
 
-        return true;
+
     }
-
-    // CRUD: CREATE OK, READ fora da logica, UPDATE OK, DELETE OK
-
 
 
 }
