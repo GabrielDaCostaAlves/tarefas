@@ -57,7 +57,7 @@ public class UsuarioService {
         if (!usuario.getEmail().equals(usuarioAtualizado.getEmail())){
             throw new IllegalArgumentException("Não tem autorização para alterar este usuário.");
         }
-
+        usuarioAtualizado =  usuarioRepository.save(usuario);
 
         return new UsuarioResponseDTO(
                     usuarioAtualizado.getId(),usuario.getNome(),usuario.getEmail()
@@ -67,6 +67,8 @@ public class UsuarioService {
 
     // TODO: implementar exclusão.
     public Boolean excluirUsuario(UsuarioDto usuarioDto){
+
+
 
         return null;
     }
