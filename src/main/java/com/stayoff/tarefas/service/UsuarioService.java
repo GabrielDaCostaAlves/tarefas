@@ -46,6 +46,33 @@ public class UsuarioService {
     }
 
 
+    public UsuarioResponseDTO atualizaUsuario(UsuarioDto usuarioDto,Usuario usuario){
+        validarEmail(usuarioDto);
+        Usuario usuarioAtualizado = Usuario.builder()
+                .nome(usuarioDto.nome())
+                .email(usuarioDto.email())
+                .senha(usuarioDto.senha())
+                .build();
+
+        if (!usuario.getEmail().equals(usuarioAtualizado.getEmail())){
+            throw new IllegalArgumentException("Não tem autorização para alterar este usuário.");
+        }
+
+
+        return new UsuarioResponseDTO(
+                    usuarioAtualizado.getId(),usuario.getNome(),usuario.getEmail()
+        );
+
+    }
+
+    // TODO: implementar exclusão.
+    public Boolean excluirUsuario(UsuarioDto usuarioDto){
+
+        return null;
+    }
+
+    // CRUD: CREATE OK, READ fora da logica, UPDATE a fazer, DELETE a fazer
+
 
 
 }
