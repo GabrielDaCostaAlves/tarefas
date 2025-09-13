@@ -29,8 +29,18 @@ public class Tarefa {
     @Column(nullable = false)
     private Boolean concluido = false;
 
-    @Column(nullable = false, name = "data_criacao")
-    private LocalDateTime dataCriacao = LocalDateTime.now();
+    @Column(nullable = false, name = "data_criacao", updatable = false)
+    private LocalDateTime dataCriacao;
+
+    @PrePersist
+    public void prePersist() {
+        if (concluido == null){
+            concluido = false;
+        }
+        if (dataCriacao == null) {
+            dataCriacao = LocalDateTime.now();
+        }
+    }
 
 
     @ManyToOne(optional = false)
