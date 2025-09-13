@@ -5,7 +5,6 @@ import com.stayoff.tarefas.dto.saida.UsuarioResponseDTO;
 import com.stayoff.tarefas.model.Usuario;
 import com.stayoff.tarefas.repository.UsuarioRepository;
 import com.stayoff.tarefas.service.UsuarioService;
-import jakarta.persistence.PostUpdate;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +48,7 @@ public class UsuarioController {
     }
 
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUsuario(@PathVariable Long id){
 
 
