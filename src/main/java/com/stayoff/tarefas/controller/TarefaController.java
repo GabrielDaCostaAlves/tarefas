@@ -1,16 +1,14 @@
 package com.stayoff.tarefas.controller;
 
 import com.stayoff.tarefas.dto.entrada.TarefaDto;
+import com.stayoff.tarefas.dto.entrada.TarefaUpdateDTO;
 import com.stayoff.tarefas.dto.saida.TarefaResponseDTO;
 import com.stayoff.tarefas.model.Usuario;
 import com.stayoff.tarefas.repository.UsuarioRepository;
 import com.stayoff.tarefas.service.TarefaService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/tarefas")
@@ -34,4 +32,18 @@ public class TarefaController {
 
         return ResponseEntity.ok(tarefaResponseDTO);
     }
+
+
+    @PutMapping("/{idTarefa}")
+    public ResponseEntity<TarefaResponseDTO> atualizarTarefa(@Valid @RequestBody TarefaUpdateDTO tarefaUpdateDTO, @PathVariable Long idTarefa  ){
+
+        Usuario usuario =  usuarioRepository.findById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario não encontrado."));
+
+        TarefaResponseDTO tarefaResponseDTO = tarefaService.atualizarTarefa(idTarefa,tarefaUpdateDTO, usuario);
+
+        return ResponseEntity.ok(tarefaResponseDTO);
+    }
+
+
 }
