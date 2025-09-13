@@ -2,7 +2,6 @@ package com.stayoff.tarefas.service;
 
 import com.stayoff.tarefas.dto.entrada.TarefaDto;
 import com.stayoff.tarefas.dto.entrada.TarefaUpdateDTO;
-import com.stayoff.tarefas.dto.paginado.PagedResponseDTO;
 import com.stayoff.tarefas.dto.saida.TarefaResponseDTO;
 import com.stayoff.tarefas.model.Tarefa;
 import com.stayoff.tarefas.model.Usuario;
@@ -18,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TarefaService {
 
-    private TarefaRepository tarefaRepository;
+    private final TarefaRepository tarefaRepository;
 
     public TarefaService (TarefaRepository tarefaRepository) {
         this.tarefaRepository = tarefaRepository;
