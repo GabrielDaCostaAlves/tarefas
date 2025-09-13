@@ -14,7 +14,7 @@
             </column>
             <column name="descricao" type="TEXT"/>
             <column name="concluido" type="boolean" defaultValueBoolean="false"/>
-            <column name="data_criacao" type="datetime">
+            <column name="data_criacao" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
             <column name="usuario_id" type="int">
