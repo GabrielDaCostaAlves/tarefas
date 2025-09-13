@@ -2,12 +2,14 @@ package com.stayoff.tarefas.controller;
 
 import com.stayoff.tarefas.dto.entrada.TarefaDto;
 import com.stayoff.tarefas.dto.entrada.TarefaUpdateDTO;
+import com.stayoff.tarefas.dto.paginado.PagedResponseDTO;
 import com.stayoff.tarefas.dto.saida.TarefaResponseDTO;
 import com.stayoff.tarefas.model.Usuario;
 import com.stayoff.tarefas.repository.UsuarioRepository;
 import com.stayoff.tarefas.service.TarefaService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +57,25 @@ public class TarefaController {
 
         tarefaService.excluirTarefa(idTarefa,usuario);
         return  ResponseEntity.ok("Tarefa excluida com sucesso!");
+    }
+
+
+    @GetMapping
+    public ResponseEntity<PagedResponseDTO<TarefaResponseDTO>> buscaTodasTarefas(
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size
+    ){
+        Usuario usuario = usuarioRepository.findById(1L)
+                .orElseThrow(()-> new EntityNotFoundException("Usuario não encontrado."));
+
+
+        Page<TarefaResponseDTO> tarefasPaginado = tarefaService.buscaTarefasPaginado(
+                usuario,
+                page,
+                size
+        );
+
+
+        return ResponseEntity.ok(PagedResponseDTO.from(tarefasPaginado));
     }
 
 

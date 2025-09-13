@@ -8,6 +8,10 @@ import com.stayoff.tarefas.model.Tarefa;
 import com.stayoff.tarefas.model.Usuario;
 import com.stayoff.tarefas.repository.TarefaRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,10 +73,15 @@ public class TarefaService {
 
     }
 
-    //TODO: Criar o metodo da paginação.
-    public PagedResponseDTO<TarefaResponseDTO> buscaTarefasPaginado(Usuario usuario){
 
-        return null;
+    public Page<TarefaResponseDTO> buscaTarefasPaginado(Usuario usuario, int page, int size){
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+
+        return tarefaRepository
+              .findByUsuario(usuario, pageable)
+              .map(t -> new TarefaResponseDTO(t.getId(),t.getTitulo(),t.getDescricao(),t.getConcluido(),t.getDataCriacao()));
+
     }
 
 }
