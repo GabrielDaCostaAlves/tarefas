@@ -5,6 +5,7 @@ import com.stayoff.tarefas.dto.saida.UsuarioResponseDTO;
 import com.stayoff.tarefas.model.Usuario;
 import com.stayoff.tarefas.repository.UsuarioRepository;
 import com.stayoff.tarefas.service.UsuarioService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +41,7 @@ public class UsuarioController {
             usuario = usuarioOpt.get();
 
         } else {
-            throw new IllegalArgumentException("Usuário não encontrado");
+            throw new EntityNotFoundException("Usuário não encontrado");
         }
         UsuarioResponseDTO usuarioResponseDTO = usuarioService.atualizaUsuario(usuarioDto,usuario);
 
