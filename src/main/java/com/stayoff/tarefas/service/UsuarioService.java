@@ -4,7 +4,9 @@ import com.stayoff.tarefas.dto.entrada.UsuarioDto;
 import com.stayoff.tarefas.dto.saida.UsuarioResponseDTO;
 import com.stayoff.tarefas.model.Usuario;
 import com.stayoff.tarefas.repository.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -17,6 +19,7 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
+    @Transactional
     public UsuarioResponseDTO criarUsuario(UsuarioDto usuarioDto){
 
         validarEmail(usuarioDto.email(),null);
@@ -34,6 +37,7 @@ public class UsuarioService {
         );
     }
 
+    @Transactional
     private void validarEmail(String email, Long usuarioId) {
         if (email == null || email.isBlank() || !email.contains("@")) {
             throw new IllegalArgumentException("Email inválido");
@@ -47,6 +51,7 @@ public class UsuarioService {
         }
     }
 
+    @Transactional
     public UsuarioResponseDTO atualizaUsuario(UsuarioDto usuarioDto,Usuario usuario){
 
         validarEmail(usuarioDto.email(),usuario.getId());
@@ -67,10 +72,11 @@ public class UsuarioService {
     }
 
 
+    @Transactional
     public void excluirUsuario(Long id){
 
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
 
         usuarioRepository.delete(usuario);
 
