@@ -55,9 +55,17 @@ public class TarefaService {
         return new TarefaResponseDTO(tarefa.getId(),tarefa.getTitulo(),tarefa.getDescricao(),tarefa.getConcluido(),tarefa.getDataCriacao());
     }
 
-    //TODO: Criar o metodo de excluir.
-    public void excluirTarefa(TarefaDto tarefaDto, Usuario usuario){
+    @Transactional
+    public void excluirTarefa(Long id, Usuario usuario){
 
+        Tarefa tarefa =  tarefaRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("Tarefa não localizada."));
+
+        if ( !tarefa.getUsuario().getEmail().equals(usuario.getEmail())){
+            throw new EntityNotFoundException("Tarefa não localizada.");
+        }
+
+        tarefaRepository.delete(tarefa);
 
     }
 
