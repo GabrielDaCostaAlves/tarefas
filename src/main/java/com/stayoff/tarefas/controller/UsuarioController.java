@@ -3,14 +3,10 @@ package com.stayoff.tarefas.controller;
 import com.stayoff.tarefas.dto.entrada.UsuarioDto;
 import com.stayoff.tarefas.dto.saida.UsuarioResponseDTO;
 import com.stayoff.tarefas.model.Usuario;
-import com.stayoff.tarefas.repository.UsuarioRepository;
 import com.stayoff.tarefas.service.UsuarioService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -18,39 +14,30 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    private final UsuarioRepository usuarioRepository;
-
-    public UsuarioController(UsuarioService usuarioService ,UsuarioRepository usuarioRepository){
+    public UsuarioController(UsuarioService usuarioService){
         this.usuarioService = usuarioService;
-        this.usuarioRepository = usuarioRepository;
     }
 
 
-
     @PutMapping
-    public  ResponseEntity<UsuarioResponseDTO> atualizaUsuario (@Valid @RequestBody UsuarioDto usuarioDto){
+    public ResponseEntity<UsuarioResponseDTO> atualizaUsuario(@Valid @RequestBody UsuarioDto usuarioDto){
 
-        Optional<Usuario> usuarioOpt = usuarioRepository.findById(1L);
-        Usuario usuario = new Usuario();
-        if (usuarioOpt.isPresent()) {
-            usuario = usuarioOpt.get();
+        Usuario usuarioLogado = usuarioService.getUsuarioLogado();
 
-        } else {
-            throw new EntityNotFoundException("Usuário não encontrado");
-        }
-        UsuarioResponseDTO usuarioResponseDTO = usuarioService.atualizaUsuario(usuarioDto,usuario);
+
+        UsuarioResponseDTO usuarioResponseDTO = usuarioService.atualizaUsuario(usuarioDto, usuarioLogado);
 
         return ResponseEntity.ok(usuarioResponseDTO);
     }
 
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUsuario(@PathVariable Long id){
+    @DeleteMapping
+    public ResponseEntity<String> deleteUsuario(){
 
+        Usuario usuarioLogado = usuarioService.getUsuarioLogado();
 
-        usuarioService.excluirUsuario(id);
+        usuarioService.excluirUsuarioLogado();
 
-
-        return ResponseEntity.ok("Usuario excluido com sucesso!");
+        return ResponseEntity.ok("Usuário excluído com sucesso!");
     }
 }

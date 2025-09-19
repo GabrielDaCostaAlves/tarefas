@@ -5,35 +5,39 @@ import com.stayoff.tarefas.dto.saida.UsuarioResponseDTO;
 import com.stayoff.tarefas.model.Usuario;
 import com.stayoff.tarefas.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository usuarioRepository){
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder){
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     public UsuarioResponseDTO criarUsuario(UsuarioDto usuarioDto){
+        validarEmail(usuarioDto.email(), null);
 
-        validarEmail(usuarioDto.email(),null);
         Usuario usuario = Usuario.builder()
                 .nome(usuarioDto.nome())
                 .email(usuarioDto.email())
-                .senha(usuarioDto.senha())
+                .senha(passwordEncoder.encode(usuarioDto.senha()))
                 .build();
 
-        usuario =  usuarioRepository.save(usuario);
-
+        usuario = usuarioRepository.save(usuario);
 
         return new UsuarioResponseDTO(
-                usuario.getId(),usuario.getNome(),usuario.getEmail()
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail()
         );
     }
 
@@ -43,8 +47,7 @@ public class UsuarioService {
             throw new IllegalArgumentException("Email inválido");
         }
 
-        Usuario usuarioExistente = usuarioRepository.findByEmail(email);
-
+        Usuario usuarioExistente = usuarioRepository.findByEmail(email).orElse(null);
 
         if (usuarioExistente != null && !usuarioExistente.getId().equals(usuarioId)) {
             throw new IllegalArgumentException("E-mail já utilizado por outro usuário!");
@@ -52,51 +55,36 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioResponseDTO atualizaUsuario(UsuarioDto usuarioDto,Usuario usuario){
+    public UsuarioResponseDTO atualizaUsuario(UsuarioDto usuarioDto, Usuario usuario){
+        validarEmail(usuarioDto.email(), usuario.getId());
 
-        validarEmail(usuarioDto.email(),usuario.getId());
-
-
-
-        usuario.setSenha(usuarioDto.senha());
-        usuario.setEmail(usuarioDto.email());
         usuario.setNome(usuarioDto.nome());
+        usuario.setEmail(usuarioDto.email());
+        usuario.setSenha(passwordEncoder.encode(usuarioDto.senha()));
 
-
-        usuario =  usuarioRepository.save(usuario);
+        usuario = usuarioRepository.save(usuario);
 
         return new UsuarioResponseDTO(
-                usuario.getId(),usuario.getNome(),usuario.getEmail()
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail()
         );
-
     }
 
     @Transactional
-    public UsuarioResponseDTO buscaUsuarioPorId(Long idUsuario,Usuario usuarioLogado){
-        Usuario usuarioDoBanco = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+    public void excluirUsuarioLogado(){
+        Usuario usuarioLogado = getUsuarioLogado();
+        usuarioRepository.delete(usuarioLogado);
+    }
 
-        if (!usuarioDoBanco.getId().equals(usuarioLogado.getId())) {
-            throw new SecurityException("Você não pode buscar os dados de outro usuário.");
+    @Transactional
+    public Usuario getUsuarioLogado() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("Usuário não autenticado");
         }
-
-        return new UsuarioResponseDTO(
-                usuarioDoBanco.getId(),usuarioDoBanco.getNome(),usuarioDoBanco.getEmail()
-        );
-
+        String email = authentication.getName();
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
     }
-
-
-    @Transactional
-    public void excluirUsuario(Long id){
-
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
-
-        usuarioRepository.delete(usuario);
-
-
-    }
-
-
 }
