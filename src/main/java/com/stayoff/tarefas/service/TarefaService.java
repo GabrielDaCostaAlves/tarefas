@@ -85,6 +85,7 @@ public class TarefaService {
 
     }
 
+    @Transactional
     public void atualizarTarefaConcluido(Long idTarefa, Long verificacao , Usuario usuario) {
         Tarefa tarefa = tarefaRepository.findById(idTarefa)
                 .orElseThrow(()-> new EntityNotFoundException("Tarefa não encontrada."));
