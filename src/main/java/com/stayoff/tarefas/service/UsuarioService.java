@@ -71,6 +71,21 @@ public class UsuarioService {
 
     }
 
+    @Transactional
+    public UsuarioResponseDTO buscaUsuarioPorId(Long idUsuario,Usuario usuarioLogado){
+        Usuario usuarioDoBanco = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        if (!usuarioDoBanco.getId().equals(usuarioLogado.getId())) {
+            throw new SecurityException("Você não pode buscar os dados de outro usuário.");
+        }
+
+        return new UsuarioResponseDTO(
+                usuarioDoBanco.getId(),usuarioDoBanco.getNome(),usuarioDoBanco.getEmail()
+        );
+
+    }
+
 
     @Transactional
     public void excluirUsuario(Long id){
