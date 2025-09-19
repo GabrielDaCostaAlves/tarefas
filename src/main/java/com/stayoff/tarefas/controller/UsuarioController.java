@@ -25,11 +25,6 @@ public class UsuarioController {
         this.usuarioRepository = usuarioRepository;
     }
 
-    @PostMapping
-    public ResponseEntity<UsuarioResponseDTO> criarUsuario(@Valid @RequestBody UsuarioDto usuarioDto) {
-        UsuarioResponseDTO usuarioResponse = usuarioService.criarUsuario(usuarioDto);
-        return ResponseEntity.ok(usuarioResponse);
-    }
 
 
     @PutMapping
