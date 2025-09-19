@@ -7,6 +7,8 @@ import com.stayoff.tarefas.model.Tarefa;
 import com.stayoff.tarefas.model.Usuario;
 import com.stayoff.tarefas.repository.TarefaRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -83,4 +85,26 @@ public class TarefaService {
 
     }
 
+    public void atualizarTarefaConcluido(Long idTarefa, Long verificacao , Usuario usuario) {
+        Tarefa tarefa = tarefaRepository.findById(idTarefa)
+                .orElseThrow(()-> new EntityNotFoundException("Tarefa não encontrada."));
+
+        if ( !tarefa.getUsuario().getEmail().equals(usuario.getEmail())){
+
+            throw new EntityNotFoundException("Tarefa não encontrada.");
+        }
+
+        if (verificacao != 1 && verificacao != 0 ) {
+            throw new IllegalArgumentException("Concluido precisa receber 1 ou 0.");
+        }
+        if (verificacao == 1 ) {
+            tarefa.setConcluido(true);
+            tarefaRepository.save(tarefa);
+        }
+        if (verificacao == 0 ) {
+            tarefa.setConcluido(false);
+            tarefaRepository.save(tarefa);
+        }
+
+    }
 }

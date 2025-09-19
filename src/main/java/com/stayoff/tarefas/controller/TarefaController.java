@@ -48,6 +48,21 @@
             return ResponseEntity.ok(tarefaResponseDTO);
         }
 
+        @PutMapping("/{idTarefa}/concluido/{verificao}")
+        public ResponseEntity<String> atualizarTarefaConcluido(
+                @PathVariable Long idTarefa,
+                @PathVariable Long verificao  ){
+
+            Usuario usuario =  usuarioRepository.findById(1L)
+                    .orElseThrow(() -> new EntityNotFoundException("Usuario não encontrado."));
+
+            tarefaService.atualizarTarefaConcluido(idTarefa, verificao,usuario);
+
+            return ResponseEntity.ok("Alterado com sucesso!");
+        }
+
+
+
 
         @DeleteMapping("/{idTarefa}")
         public  ResponseEntity<String> excluiTarefa(@PathVariable Long idTarefa){
