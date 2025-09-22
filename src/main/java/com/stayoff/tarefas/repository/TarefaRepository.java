@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface TarefaRepository extends JpaRepository<Tarefa,Long> {
 
     Page<Tarefa> findByUsuario(Usuario usuario, Pageable pageable);
+
+    long countByUsuarioId(Long id);
 }

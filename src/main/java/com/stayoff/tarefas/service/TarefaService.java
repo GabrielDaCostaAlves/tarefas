@@ -25,6 +25,12 @@ public class TarefaService {
 
     @Transactional
     public TarefaResponseDTO criarTarefa(TarefaDto tarefaDto, Usuario usuario){
+        Long qtTarefas =  tarefaRepository.countByUsuarioId(usuario.getId());
+
+        if (qtTarefas >= 30){
+            throw new IllegalArgumentException("Quantidade maxima de tarefas atingidas.");
+        }
+
         Tarefa tarefa = Tarefa.builder()
                 .titulo(tarefaDto.titulo())
                 .descricao(tarefaDto.descricao())
