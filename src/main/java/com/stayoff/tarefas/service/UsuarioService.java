@@ -1,10 +1,13 @@
 package com.stayoff.tarefas.service;
 
+import com.stayoff.tarefas.dto.entrada.UsuarioAtualizarDto;
 import com.stayoff.tarefas.dto.entrada.UsuarioDto;
+import com.stayoff.tarefas.dto.saida.UsuarioAtualizarResponseDTO;
 import com.stayoff.tarefas.dto.saida.UsuarioResponseDTO;
+import com.stayoff.tarefas.exception.ResourceNotFoundException;
 import com.stayoff.tarefas.model.Usuario;
 import com.stayoff.tarefas.repository.UsuarioRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.stayoff.tarefas.security.jwt.JwtUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,10 +19,12 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder){
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil){
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @Transactional
@@ -55,21 +60,33 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioResponseDTO atualizaUsuario(UsuarioDto usuarioDto, Usuario usuario){
-        validarEmail(usuarioDto.email(), usuario.getId());
+    public UsuarioAtualizarResponseDTO atualizaUsuario(UsuarioAtualizarDto usuarioAtualizarDto, Usuario usuario){
 
-        usuario.setNome(usuarioDto.nome());
-        usuario.setEmail(usuarioDto.email());
-        usuario.setSenha(passwordEncoder.encode(usuarioDto.senha()));
+        boolean emailAlterado = !usuario.getEmail().equals(usuarioAtualizarDto.email());
 
+        validarEmail(usuarioAtualizarDto.email(), usuario.getId());
+
+        usuario.setNome(usuarioAtualizarDto.nome());
+        usuario.setEmail(usuarioAtualizarDto.email());
+        if (usuarioAtualizarDto.senha() != null) {
+            usuario.setSenha(passwordEncoder.encode(usuarioAtualizarDto.senha()));
+        }
         usuario = usuarioRepository.save(usuario);
 
-        return new UsuarioResponseDTO(
+        String novoToken = null;
+        if (emailAlterado) {
+            novoToken = jwtUtil.gerarToken(usuario.getEmail());
+        }
+
+        return new UsuarioAtualizarResponseDTO(
                 usuario.getId(),
                 usuario.getNome(),
-                usuario.getEmail()
+                usuario.getEmail(),
+                novoToken
         );
     }
+
+
 
     @Transactional
     public void excluirUsuarioLogado(){
@@ -81,10 +98,10 @@ public class UsuarioService {
     public Usuario getUsuarioLogado() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Usuário não autenticado");
+            throw new IllegalArgumentException("Usuário não autenticado");
         }
         String email = authentication.getName();
         return usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
     }
 }

@@ -7,7 +7,6 @@ import com.stayoff.tarefas.dto.saida.TarefaResponseDTO;
 import com.stayoff.tarefas.model.Usuario;
 import com.stayoff.tarefas.service.TarefaService;
 import com.stayoff.tarefas.service.UsuarioService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;

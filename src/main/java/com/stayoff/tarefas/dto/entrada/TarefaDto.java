@@ -9,7 +9,7 @@ public record TarefaDto(
     @Size(min = 3 , max = 100 ,message = "O titulo tem que estar entre 3 e 100 caracteres.")
     @NotBlank(message = "O titulo é obrigatório.")
     String titulo,
-
+    @Size(max = 300 ,message = "A descrição deve ter no máximo 300 caracteres.")
     String descricao
 
 ) {

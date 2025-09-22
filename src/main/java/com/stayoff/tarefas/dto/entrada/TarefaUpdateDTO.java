@@ -11,6 +11,7 @@ public record TarefaUpdateDTO(
         @NotBlank(message = "O titulo é obrigatório.")
         String titulo,
 
+        @Size(max = 300 ,message = "A descrição deve ter no máximo 300 caracteres.")
         String descricao,
 
         @NotNull(message = "Estado do concluido é obrigatório.")

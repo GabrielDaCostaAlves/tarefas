@@ -20,6 +20,7 @@ public class AuthController {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
+
     public AuthController(AuthenticationManager authManager, JwtUtil jwtUtil,
                           UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.authManager = authManager;
@@ -33,8 +34,18 @@ public class AuthController {
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.senha())
         );
+
         String token = jwtUtil.gerarToken(request.email());
-        return new AuthResponseDTO(token);
+
+
+        Usuario usuario = usuarioRepository.findByEmail(request.email())
+                .orElseThrow(()-> new IllegalArgumentException("Usuário não encontrado."));
+
+
+        return new AuthResponseDTO(
+                token,
+                usuario.getId()
+        );
     }
 
     @PostMapping("/cadastro")
@@ -53,6 +64,8 @@ public class AuthController {
 
 
         String token = jwtUtil.gerarToken(usuario.getEmail());
-        return new AuthResponseDTO(token);
+        return new AuthResponseDTO(
+                token,
+                usuario.getId());
     }
 }

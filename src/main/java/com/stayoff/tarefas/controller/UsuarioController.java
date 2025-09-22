@@ -1,6 +1,8 @@
 package com.stayoff.tarefas.controller;
 
+import com.stayoff.tarefas.dto.entrada.UsuarioAtualizarDto;
 import com.stayoff.tarefas.dto.entrada.UsuarioDto;
+import com.stayoff.tarefas.dto.saida.UsuarioAtualizarResponseDTO;
 import com.stayoff.tarefas.dto.saida.UsuarioResponseDTO;
 import com.stayoff.tarefas.model.Usuario;
 import com.stayoff.tarefas.service.UsuarioService;
@@ -20,12 +22,12 @@ public class UsuarioController {
 
 
     @PutMapping
-    public ResponseEntity<UsuarioResponseDTO> atualizaUsuario(@Valid @RequestBody UsuarioDto usuarioDto){
+    public ResponseEntity<UsuarioAtualizarResponseDTO> atualizaUsuario(@Valid @RequestBody UsuarioAtualizarDto usuarioAtualizarDto){
 
         Usuario usuarioLogado = usuarioService.getUsuarioLogado();
 
 
-        UsuarioResponseDTO usuarioResponseDTO = usuarioService.atualizaUsuario(usuarioDto, usuarioLogado);
+        UsuarioAtualizarResponseDTO usuarioResponseDTO = usuarioService.atualizaUsuario(usuarioAtualizarDto, usuarioLogado);
 
         return ResponseEntity.ok(usuarioResponseDTO);
     }
@@ -40,4 +42,19 @@ public class UsuarioController {
 
         return ResponseEntity.ok("Usuário excluído com sucesso!");
     }
+
+    @GetMapping
+    public ResponseEntity<UsuarioResponseDTO> buscaUsuario(){
+
+        Usuario usuarioLogado = usuarioService.getUsuarioLogado();
+
+
+        UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO(
+                usuarioLogado.getId(),
+                usuarioLogado.getNome(),
+                usuarioLogado.getEmail());
+
+        return ResponseEntity.ok(usuarioResponseDTO);
+    }
+
 }
