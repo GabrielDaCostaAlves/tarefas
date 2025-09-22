@@ -23,7 +23,7 @@ public class Tarefa {
     @Column(nullable = false, length = 100)
     private String titulo;
 
-    @Lob
+    @Column(length = 100)
     private String descricao;
 
     @Column(nullable = false)
