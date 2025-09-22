@@ -54,4 +54,9 @@ public class GlobalExceptionHandler {
 
         return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(mensagens);
     }
+
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<String> handleSecurityException(SecurityException e){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
 }

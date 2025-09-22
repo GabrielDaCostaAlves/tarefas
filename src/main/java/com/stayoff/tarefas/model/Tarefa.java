@@ -27,6 +27,7 @@ public class Tarefa {
     private String descricao;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean concluido = false;
 
     @Column(nullable = false, name = "data_criacao", updatable = false)

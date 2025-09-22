@@ -34,14 +34,24 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        // Libera endpoints de autenticação
                         .requestMatchers("/auth/**").permitAll()
+                        // Libera Swagger e OpenAPI
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
+                        // Todas as outras requisições exigem autenticação
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(jwtAuthEntryPoint)
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .cors(Customizer -> Customizer.configurationSource(corsConfigurationSource())); // usa CorsConfigurationSource
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         return http.build();
     }
