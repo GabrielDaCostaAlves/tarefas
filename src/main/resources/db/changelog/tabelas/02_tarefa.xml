@@ -12,7 +12,7 @@
             <column name="titulo" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="descricao" type="TEXT"/>
+            <column name="descricao" type="varchar(300)"/>
             <column name="concluido" type="boolean" defaultValueBoolean="false"/>
             <column name="data_criacao" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>
@@ -27,7 +27,7 @@
         </createIndex>
 
         <addForeignKeyConstraint baseTableName="tarefa" baseColumnNames="usuario_id" constraintName="fk_tarefa_usuario" referencedTableName="usuario"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id" onDelete="CASCADE"/>
     </changeSet>
 
 
