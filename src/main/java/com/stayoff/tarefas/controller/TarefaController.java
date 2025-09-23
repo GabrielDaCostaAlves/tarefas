@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/tarefas")
+@SecurityRequirement(name = "bearerAuth") // indica que JWT é necessário
 public class TarefaController {
 
     private final TarefaService tarefaService;
@@ -34,7 +36,8 @@ public class TarefaController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tarefa criada com sucesso",
                     content = @Content(schema = @Schema(implementation = TarefaResponseDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Não autorizado, token ausente ou inválido", content = @Content)
     })
     @PostMapping
     public ResponseEntity<TarefaResponseDTO> criarTarefa(@Valid @RequestBody TarefaDto tarefaDto){
@@ -47,8 +50,9 @@ public class TarefaController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tarefa atualizada com sucesso",
                     content = @Content(schema = @Schema(implementation = TarefaResponseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Tarefa não encontrada", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Não autorizado, token ausente ou inválido", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Tarefa não encontrada", content = @Content)
     })
     @PutMapping("/{idTarefa}")
     public ResponseEntity<TarefaResponseDTO> atualizarTarefa(
@@ -62,6 +66,7 @@ public class TarefaController {
     @Operation(summary = "Atualizar status de conclusão da tarefa", description = "Marca ou desmarca uma tarefa como concluída.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Status alterado com sucesso", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Não autorizado, token ausente ou inválido", content = @Content),
             @ApiResponse(responseCode = "404", description = "Tarefa não encontrada", content = @Content)
     })
     @PutMapping("/{idTarefa}/concluido/{verificacao}")
@@ -76,6 +81,7 @@ public class TarefaController {
     @Operation(summary = "Excluir tarefa", description = "Exclui uma tarefa existente do usuário logado.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tarefa excluída com sucesso", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Não autorizado, token ausente ou inválido", content = @Content),
             @ApiResponse(responseCode = "404", description = "Tarefa não encontrada", content = @Content)
     })
     @DeleteMapping("/{idTarefa}")
@@ -88,7 +94,8 @@ public class TarefaController {
     @Operation(summary = "Listar tarefas paginadas", description = "Retorna todas as tarefas do usuário logado, paginadas.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de tarefas retornada com sucesso",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = TarefaResponseDTO.class))))
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = TarefaResponseDTO.class)))),
+            @ApiResponse(responseCode = "401", description = "Não autorizado, token ausente ou inválido", content = @Content)
     })
     @GetMapping
     public ResponseEntity<PagedResponseDTO<TarefaResponseDTO>> buscaTodasTarefas(
