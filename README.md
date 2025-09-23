@@ -13,6 +13,9 @@
 Aplicação para gerenciamento de tarefas pessoais, permitindo criar, listar, atualizar e excluir tarefas.  
 O objetivo é treinar o CRUD com **Java e Spring Boot** e depois integrar com um frontend (**React/JS**).
 
+Para visualizar o frontend em React:
+Frontend: [tarefas](https://github.com/GabrielDaCostaAlves/tarefas-site)
+
 > Status atual: Backend e Frontend implementado.
 > 
 > Próximo passo: testes unitários e de integração.
