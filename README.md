@@ -11,20 +11,22 @@
 ## 1. Descrição
 
 Aplicação para gerenciamento de tarefas pessoais, permitindo criar, listar, atualizar e excluir tarefas.  
-O objetivo é treinar o CRUD com **Java e Spring Boot** e depois integrar com um frontend (**React/JS**).
+O projeto serve para treinar **CRUD com Java e Spring Boot**, integrando posteriormente com **frontend em React/JS**.
 
-Para visualizar o frontend em React:
-Frontend: [tarefas](https://github.com/GabrielDaCostaAlves/tarefas-site)
-
-> Status atual: Backend e Frontend implementado.
-> 
+> Status atual: Backend e frontend implementados.  
 > Próximo passo: testes unitários e de integração.
+
+**Frontend (React/JS):** [Repositório do frontend](https://github.com/GabrielDaCostaAlves/tarefas-site)
+
+---
 
 ## 2. Objetivos
 
 - Organizar tarefas do dia a dia.
-- Demonstrar o conhecimento em Java e Spring Boot.
-- Criar um portfólio com estudos práticos.
+- Demonstrar conhecimento em Java e Spring Boot.
+- Criar um portfólio de estudos práticos.
+
+---
 
 ## 3. Análise de Requisitos
 
@@ -41,18 +43,24 @@ Frontend: [tarefas](https://github.com/GabrielDaCostaAlves/tarefas-site)
 - Armazenar dados em banco relacional (MySQL).
 - Disponibilizar API REST acessível por clientes externos.
 - Responder em até 2 segundos por requisição.
-- Simples de configurar e executar localmente.
+- Fácil de configurar e executar localmente.
+
+---
 
 ## 4. Tecnologias
 
-- **Back-end:** Java + Spring Boot
+- **Backend:** Java + Spring Boot
   - Dependências: Spring Web, Spring Data JPA, MySQL Connector, Lombok, Spring Boot DevTools, Liquibase, Spring Validation, Spring Security, JWT, Apache Commons Lang3, SpringDoc OpenAPI (Swagger)
 - **Banco de Dados:** MySQL
-- **Frontend (em construção):** React
+- **Frontend:** React
 - **Versionamento:** Git/GitHub
 - **Documentação da API:** Swagger (acessível em `/swagger-ui.html` após rodar o backend)
 
+---
+
 ## 5. Como Executar
+
+### 5.1 Backend
 
 1. Clonar o repositório:
 
@@ -61,16 +69,18 @@ git clone https://github.com/GabrielDaCostaAlves/tarefas.git
 cd tarefas
 ```
 
-2. Configurar banco de dados:
+2. Configurar banco de dados MySQL:
 
-- Criar banco `sistema_tarefas` no MySQL.
-- Atualizar `src/main/resources/application.properties`:
+- Criar banco `sistema_tarefas`.
+- Atualizar `src/main/resources/application.properties` com suas credenciais:
 
 ```properties
-spring.datasource.url=jdbc:mysql://host:3306/sistema_tarefas
+spring.datasource.url=jdbc:mysql://localhost:3306/sistema_tarefas
 spring.datasource.username=SEU_USUARIO
 spring.datasource.password=SUA_SENHA
 ```
+
+> **Importante:** Sem a configuração correta do MySQL, o backend não funcionará.
 
 3. Rodar o backend:
 
@@ -80,13 +90,16 @@ spring.datasource.password=SUA_SENHA
 
 4. Acessar Swagger UI para testar a API:
 
-- Abra `http://localhost:8080/swagger-ui.html` no navegador.
-- Para endpoints protegidos, clique em **Authorize** no Swagger e insira:
-  ```
-  Bearer SEU_TOKEN_JWT
-  ```
+- Abrir `http://localhost:8080/swagger-ui.html`.
+- Para endpoints protegidos, clique em **Authorize** e insira:
 
-5. Frontend (React):
+```
+Bearer SEU_TOKEN_JWT
+```
+
+---
+
+### 5.2 Frontend (React)
 
 ```bash
 cd frontend
@@ -94,11 +107,15 @@ npm install
 npm start
 ```
 
+- O frontend vai abrir no navegador (geralmente em `http://localhost:3000`).
+
+---
+
 ## 6. Endpoints da API
 
 ### 6.1 Usuários
 
-| Método | Endpoint       | Descrição                | Request Exemplos                                                          | Response Exemplos                                                                      |
+| Método | Endpoint       | Descrição                | Request Exemplo                                                          | Response Exemplo                                                                      |
 |--------|----------------|--------------------------|---------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
 | POST   | /auth/cadastro | Cadastrar usuário        | `{ "nome": "Gabriel", "email": "gabriel@email.com", "senha": "123456" }`  | `{ "token": "jwt-token", "usuarioId": 1 }`                                             |
 | POST   | /auth/login    | Login                    | `{ "email": "gabriel@email.com", "senha": "123456" }`                     | `{ "token": "jwt-token", "usuarioId": 1 }`                                             |
@@ -108,15 +125,17 @@ npm start
 
 ### 6.2 Tarefas
 
-| Método | Endpoint                                    | Descrição                 | Request Exemplos                                                                              | Response Exemplos                                                                                                                                                                                              |
-|--------|---------------------------------------------|---------------------------|-----------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| POST   | /tarefas                                    | Criar tarefa              | `{ "titulo": "Estudar", "descricao": "Estudar Spring Boot" }`                                 | `{ "id": 1, "titulo": "Estudar", "descricao": "Estudar Spring Boot", "concluido": false, "dataCriacao": "2025-09-22T21:00:00" }`                                                                               |
-| GET    | /tarefas                                    | Listar tarefas (paginado) | -                                                                                             | `{ "content": [ {"id": 1, "titulo": "Estudar", "descricao": "Estudar Spring Boot", "concluido": false, "dataCriacao": "2025-09-22T21:00:00" } ], "page": 0, "size": 10, "totalElements": 1, "totalPages": 1 }` |
-| PUT    | /tarefas/{idTarefa}                         | Atualizar tarefa          | `{ "titulo": "Estudar Java", "descricao": "Estudar Spring Boot e Java", "concluido": false }` | `{ "id": 1, "titulo": "Estudar Java", "descricao": "Estudar Spring Boot e Java", "concluido": false, "dataCriacao": "2025-09-22T21:00:00" }`                                                                   |
-| PUT    | /tarefas/{idTarefa}/concluido/{verificacao} | Marcar concluída ou não   | -                                                                                             | `Alterado com sucesso!`                                                                                                                                                                                        |
-| DELETE | /tarefas/{idTarefa}                         | Excluir tarefa            | -                                                                                             | `Tarefa excluída com sucesso!`                                                                                                                                                                                 |
+| Método | Endpoint                                    | Descrição                 | Request Exemplo                                                                              | Response Exemplo                                                                                                                                      |
+|--------|---------------------------------------------|---------------------------|-----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| POST   | /tarefas                                    | Criar tarefa              | `{ "titulo": "Estudar", "descricao": "Estudar Spring Boot" }`                                 | `{ "id": 1, "titulo": "Estudar", "descricao": "Estudar Spring Boot", "concluido": false, "dataCriacao": "2025-09-22T21:00:00" }`                     |
+| GET    | /tarefas                                    | Listar tarefas (paginado)| -                                                                                             | `{ "content": [ {"id": 1, "titulo": "Estudar", "descricao": "Estudar Spring Boot", "concluido": false, "dataCriacao": "2025-09-22T21:00:00" } ], "page": 0, "size": 10, "totalElements": 1, "totalPages": 1 }` |
+| PUT    | /tarefas/{idTarefa}                         | Atualizar tarefa          | `{ "titulo": "Estudar Java", "descricao": "Estudar Spring Boot e Java", "concluido": false }` | `{ "id": 1, "titulo": "Estudar Java", "descricao": "Estudar Spring Boot e Java", "concluido": false, "dataCriacao": "2025-09-22T21:00:00" }`        |
+| PUT    | /tarefas/{idTarefa}/concluido/{verificacao} | Marcar concluída ou não   | -                                                                                             | `Alterado com sucesso!`                                                                                                                              |
+| DELETE | /tarefas/{idTarefa}                         | Excluir tarefa            | -                                                                                             | `Tarefa excluída com sucesso!`                                                                                                                       |
 
 > Todos os endpoints exigem autenticação com token JWT.
+
+---
 
 ## 7. Modelo de Dados
 
@@ -135,17 +154,21 @@ npm start
 - `email` → texto curto
 - `senha` → texto curto
 
-### 7.3 Diagramas
+---
 
-#### 7.3.1 Diagrama Entidade-Relacionamento Lógico
+## 8. Diagramas
 
-![Diagrama ER Logico](docs/diagrama_er_logico.png)
+### 8.1 Diagrama ER Lógico
 
-#### 7.3.2 Diagrama Entidade-Relacionamento Físico
+![Diagrama ER Lógico](docs/diagrama_er_logico.png)
+
+### 8.2 Diagrama ER Físico
 
 ![Diagrama ER Físico](docs/diagrama_er_fisico.png)
 
-## 8. Testes
+---
+
+## 9. Testes
 
 - Implementação futura de testes unitários e de integração usando `spring-boot-starter-test`.
 - Cobertura planejada:
@@ -153,15 +176,16 @@ npm start
   - Testar serviços (`TarefaService` e `UsuarioService`)
   - Testar validações e exceções globais
 
-## 9. Swagger / OpenAPI
+---
+
+## 10. Swagger / OpenAPI
 
 - A documentação interativa da API está disponível via Swagger UI.
 - Após iniciar o backend, acesse `http://localhost:8080/swagger-ui.html`.
 - Para endpoints protegidos, use o botão **Authorize** e insira:
-  ```
-  Bearer SEU_TOKEN_JWT
-  ```
-- Todos os endpoints podem ser testados diretamente na interface do Swagger, incluindo envio de requisições com token JWT.
-- Permite ver parâmetros, exemplos de request/response e status de retorno.
-- Facilita testes manuais e geração de documentação para consumo por clientes externos.
 
+```
+Bearer SEU_TOKEN_JWT
+```
+
+- Todos os endpoints podem ser testados diretamente na interface do Swagger, incluindo envio de requisições com token JWT.
